@@ -1,4 +1,6 @@
-﻿module.exports = {
+﻿require("dotenv/config");
+
+module.exports = {
   dialect: process.env.DB_CONN,
   host: process.env.DB_HOST,
   username: process.env.DB_USER,

@@ -3,12 +3,44 @@ const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
 
 module.exports = {
+  async show(request, response) {
+    const { name, email, role } = request.query;
+
+    try {
+      const users = await User.findAll({
+        attributes: { exclude: ["password"] }
+      });
+
+      return response.status(200).json(users);
+    } catch (error) {
+      return response.status(500).json({ error: "Get users list failed" });
+    }
+  },
+
+  async index(request, response) {
+    const { id } = request.params;
+
+    try {
+      const user = await User.findByPk(id, {
+        attributes: { exclude: ["password"] }
+      });
+
+      if (!user) {
+        return response.status(400).json({ error: "User not found" });
+      }
+
+      response.status(200).json(user);
+    } catch (error) {
+      return response.status(500).json({ error: "Find user failed" });
+    }
+  },
+
   async store(request, response) {
     const { name, email, password } = request.body;
 
     try {
       if (await User.findOne({ where: { email } })) {
-        return response.status(400).send({ error: "User already exists" });
+        return response.status(400).json({ error: "User already exists" });
       }
 
       const user = await User.create({
@@ -21,19 +53,43 @@ module.exports = {
 
       const token = generateToken({ id: user.id });
 
-      return response.json({ user, token });
+      return response.status(201).json({ user, token });
     } catch (error) {
-      return response.status(400).send({ error: "Registration failed" });
+      return response.status(500).json({ error: "Registration failed" });
     }
   },
 
-  async getAll(request, response) {
-    try {
-      const users = await User.findAll({});
+  async update(request, response) {
+    const { id } = request.params;
+    const { name } = request.body;
 
-      return response.json(users);
+    try {
+      if (!(await User.findByPk(id))) {
+        return response.status(400).json({ error: "User not found" });
+      }
+
+      console.log(id, name);
+      const user = User.update({ name }, { where: { id } });
+
+      return response.status(204).json(user);
     } catch (error) {
-      return response.status(400).send({ error: "Get users list failed" });
+      return response.status(500).json({ error: "Update user failed" });
+    }
+  },
+
+  async delete(request, response) {
+    const { id } = request.params;
+
+    try {
+      if (!(await User.findByPk(id))) {
+        return response.status(400).json({ error: "User not found" });
+      }
+
+      await User.destroy({ where: { id } });
+
+      return response.status(204).json({});
+    } catch (error) {
+      return response.status(500).json({ error: "Delete user failed" });
     }
   },
 
@@ -44,20 +100,20 @@ module.exports = {
       const user = await User.findOne({ where: { email } });
 
       if (!user) {
-        return response.status(400).send({ error: "User not found" });
+        return response.status(400).json({ error: "User not found" });
       }
 
       if (!(await bcrypt.compare(password, user.password))) {
-        return response.status(400).send({ erro: "Invalid password" });
+        return response.status(400).json({ erro: "Invalid password" });
       }
 
       user.password = undefined;
 
       const token = generateToken({ id: user.id });
 
-      response.send({ user, token });
+      response.status(201).json({ user, token });
     } catch (error) {
-      return response.status(400).send({ error: "Login failed" });
+      return response.status(500).json({ error: "Login failed" });
     }
   }
 };

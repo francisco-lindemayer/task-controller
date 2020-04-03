@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("users", {
+    return queryInterface.createTable("departments", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -12,20 +12,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        select: false
-      },
-      role: {
-        type: Sequelize.ENUM("Administrador", "Agente"),
-        allowNull: false,
-        defaultValue: "Agente"
       },
       created_at: {
         type: Sequelize.DATE,
@@ -39,6 +25,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("users");
+    return queryInterface.dropTable("departments");
   }
 };
