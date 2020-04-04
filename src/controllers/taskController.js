@@ -1,6 +1,8 @@
 ﻿const Task = require("../models/Task");
 const User = require("../models/User");
 const Department = require("../models/Department");
+const paginate = require("../utils/paginator");
+const filtering = require("../utils/filteringQuery");
 
 module.exports = {
   async show(request, response) {
@@ -11,15 +13,23 @@ module.exports = {
       created_at,
       started_at,
       completed_at,
-      order
+      order,
     } = request.query;
 
     try {
+      const count = await Task.count();
+
+      response.header("X-Total-Count", count);
+
       const tasks = await Task.findAll({
+        where: {
+          ...filtering(request.query, ["user_id", "department_id", "status"]),
+        },
         include: [
           { association: "user", attributes: ["name"] },
-          { association: "department", attributes: ["name"] }
-        ]
+          { association: "department", attributes: ["name"] },
+        ],
+        ...paginate(request.query),
       });
 
       return response.status(200).json(tasks);
@@ -35,8 +45,8 @@ module.exports = {
       const task = await Task.findByPk(id, {
         include: [
           { association: "user", attributes: ["name"] },
-          { association: "department", attributes: ["name"] }
-        ]
+          { association: "department", attributes: ["name"] },
+        ],
       });
 
       if (!task) {
@@ -53,10 +63,24 @@ module.exports = {
     const { description, user_id, department_id } = request.body;
 
     try {
+      if (user_id) {
+        if (!(await User.findByPk(user_id))) {
+          return response.status(400).json({ error: "User to bind not found" });
+        }
+      }
+
+      if (department_id) {
+        if (!(await Department.findByPk(department_id))) {
+          return response
+            .status(400)
+            .json({ error: "Department to bind not found" });
+        }
+      }
+
       const task = await Task.create({
         description,
         user_id,
-        department_id
+        department_id,
       });
 
       return response.status(201).json(task);
@@ -92,7 +116,7 @@ module.exports = {
         {
           description,
           user_id,
-          department_id
+          department_id,
         },
         { where: { id } }
       );
@@ -121,5 +145,5 @@ module.exports = {
 
   async changeStatus(request, response) {
     return response.status(501).json({ route: "Change status task" });
-  }
+  },
 };

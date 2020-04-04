@@ -1,6 +1,8 @@
 ﻿const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
+const paginate = require("../utils/paginator");
+const filtering = require("../utils/filteringQuery");
 
 module.exports = {
   async show(request, response) {
@@ -8,8 +10,13 @@ module.exports = {
 
     try {
       const users = await User.findAll({
-        attributes: { exclude: ["password"] }
+        where: {
+          ...filtering(request.query, ["role", "email"]),
+        },
+        attributes: { exclude: ["password"], ...paginate(request.query) },
       });
+
+      response.header("X-Total-Count", users.length);
 
       return response.status(200).json(users);
     } catch (error) {
@@ -22,7 +29,7 @@ module.exports = {
 
     try {
       const user = await User.findByPk(id, {
-        attributes: { exclude: ["password"] }
+        attributes: { exclude: ["password"] },
       });
 
       if (!user) {
@@ -46,7 +53,7 @@ module.exports = {
       const user = await User.create({
         name,
         email,
-        password
+        password,
       });
 
       user.password = undefined;
@@ -115,5 +122,5 @@ module.exports = {
     } catch (error) {
       return response.status(500).json({ error: "Login failed" });
     }
-  }
+  },
 };

@@ -1,10 +1,14 @@
 ﻿const Department = require("../models/Department");
-const { Op } = require("sequelize");
+const paginate = require("../utils/paginator");
 
 module.exports = {
   async show(request, response) {
     try {
-      const departments = await Department.findAll({});
+      const departments = await Department.findAll({
+        ...paginate(request.query),
+      });
+
+      response.header("X-Total-Count", departments.length);
 
       return response.status(200).json(departments);
     } catch (error) {
@@ -79,5 +83,5 @@ module.exports = {
     } catch (error) {
       return response.status(500).json({ error: "Delete department failed" });
     }
-  }
+  },
 };
