@@ -6,12 +6,17 @@ const filtering = require("../utils/filteringQuery");
 
 module.exports = {
   async show(request, response) {
-    const { name, email, role } = request.query;
-
     try {
       const users = await User.findAll({
         where: {
-          ...filtering(request.query, ["role", "email"]),
+          ...filtering(request.query, {
+            role: null,
+            email: null,
+            created_at: Op.between,
+            updated_at: Op.between,
+            started_at: Op.between,
+            completed_at: Op.between,
+          }),
         },
         attributes: { exclude: ["password"], ...paginate(request.query) },
       });

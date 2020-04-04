@@ -5,6 +5,11 @@ module.exports = {
   async show(request, response) {
     try {
       const departments = await Department.findAll({
+        where: {
+          name: Op.substring,
+          created_at: Op.between,
+          updated_at: Op.between,
+        },
         ...paginate(request.query),
       });
 

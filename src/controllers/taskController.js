@@ -1,21 +1,12 @@
 ﻿const Task = require("../models/Task");
 const User = require("../models/User");
 const Department = require("../models/Department");
+const { Op } = require("sequelize");
 const paginate = require("../utils/paginator");
 const filtering = require("../utils/filteringQuery");
 
 module.exports = {
   async show(request, response) {
-    const {
-      description,
-      user_id,
-      department_id,
-      created_at,
-      started_at,
-      completed_at,
-      order,
-    } = request.query;
-
     try {
       const count = await Task.count();
 
@@ -23,7 +14,16 @@ module.exports = {
 
       const tasks = await Task.findAll({
         where: {
-          ...filtering(request.query, ["user_id", "department_id", "status"]),
+          ...filtering(request.query, {
+            user_id: null,
+            department_id: null,
+            status: null,
+            description: Op.substring,
+            created_at: Op.between,
+            updated_at: Op.between,
+            started_at: Op.between,
+            completed_at: Op.between,
+          }),
         },
         include: [
           { association: "user", attributes: ["name"] },
