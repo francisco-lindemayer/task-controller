@@ -80,7 +80,7 @@ module.exports = {
     }
   },
 
-  async delete(request, response) {
+  async remove(request, response) {
     const { id } = request.params;
 
     try {

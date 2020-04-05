@@ -80,9 +80,7 @@ module.exports = {
 
       if (department_id) {
         if (!(await Department.findByPk(department_id))) {
-          return response
-            .status(400)
-            .json({ error: 'Department to bind not found' });
+          return response.status(400).json({ error: 'Department to bind not found' });
         }
       }
 
@@ -115,9 +113,7 @@ module.exports = {
 
       if (department_id) {
         if (!(await Department.findByPk(department_id))) {
-          return response
-            .status(400)
-            .json({ error: 'Department to bind not found' });
+          return response.status(400).json({ error: 'Department to bind not found' });
         }
       }
 
@@ -136,7 +132,7 @@ module.exports = {
     }
   },
 
-  async delete(request, response) {
+  async remove(request, response) {
     const { id } = request.params;
 
     try {
@@ -155,22 +151,44 @@ module.exports = {
   async changeStatus(request, response) {
     const { id } = request.params;
     const { action } = request.body;
-    const status =
-      action == 'tostart'
-        ? 'Em andamento'
-        : action == 'tocomplete'
-        ? 'Finalizado'
-        : undefined;
+    let status, started_at, completed_at;
+
+    if (action == 'tostart') {
+      status = 'Em andamento';
+      started_at = new Date();
+      console.log(started_at);
+    } else if (action == 'tocomplete') {
+      status = 'Finalizado';
+      completed_at = new Date();
+      console.log(completed_at);
+    }
+
     try {
       if (!status) {
         return response.status(400).json({ error: 'Invalid action' });
       }
 
-      if (!(await Task.findByPk(id))) {
+      const task = await Task.findByPk(id, { attributes: ['status'] });
+
+      if (!task) {
         return response.status(400).json({ error: 'Task not found' });
       }
 
-      await Task.update({ status }, { where: { id } });
+      if (status === 'Finalizado' && task.dataValues.status !== 'Em andamento') {
+        return response.status(400).json({
+          error: 'Invalid action to currently context. Check currently task status',
+          status: task.dataValues.status,
+        });
+      }
+
+      if (status === 'Em andamento' && task.dataValues.status !== 'Aberto') {
+        return response.status(400).json({
+          error: 'Invalid action to currently context. Check currently task status',
+          status: task.dataValues.status,
+        });
+      }
+
+      await Task.update({ status, started_at, completed_at }, { where: { id } });
 
       return response.status(204).json();
     } catch (error) {

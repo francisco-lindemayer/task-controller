@@ -26,6 +26,7 @@ module.exports = {
                 '(SELECT EXTRACT(EPOCH FROM (started_at - created_at)))',
               ),
             ),
+
             'totaltimetostart',
           ],
           [

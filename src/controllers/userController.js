@@ -56,7 +56,6 @@ module.exports = {
 
   async store(request, response) {
     const { name, email, password } = request.body;
-
     try {
       if (await User.findOne({ where: { email } })) {
         return response.status(400).json({ error: 'User already exists' });
@@ -80,7 +79,7 @@ module.exports = {
 
   async update(request, response) {
     const { id } = request.params;
-    const { name } = request.body;
+    const { name, role } = request.body;
 
     try {
       if (!(await User.findByPk(id))) {
@@ -96,7 +95,7 @@ module.exports = {
     }
   },
 
-  async delete(request, response) {
+  async remove(request, response) {
     const { id } = request.params;
 
     try {
