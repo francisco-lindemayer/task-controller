@@ -1,19 +1,19 @@
-﻿const { Model, DataTypes } = require("sequelize");
+﻿const { Model, DataTypes } = require('sequelize');
 
 class Department extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: DataTypes.STRING
+        name: DataTypes.STRING,
       },
       {
-        sequelize
-      }
+        sequelize,
+      },
     );
   }
 
   static associate(models) {
-    this.hasMany(models.Task, { foreignKey: "department_id", as: "tasks" });
+    this.hasMany(models.Task, { foreignKey: 'department_id', as: 'tasks' });
   }
 }
 

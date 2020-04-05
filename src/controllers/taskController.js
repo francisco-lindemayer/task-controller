@@ -1,16 +1,17 @@
-﻿const Task = require("../models/Task");
-const User = require("../models/User");
-const Department = require("../models/Department");
-const { Op } = require("sequelize");
-const paginate = require("../utils/paginator");
-const filtering = require("../utils/filteringQuery");
+﻿const Task = require('../models/Task');
+const User = require('../models/User');
+const Department = require('../models/Department');
+const { Op } = require('sequelize');
+const paginate = require('../utils/paginator');
+const filtering = require('../utils/filteringQuery');
+const ordering = require('../utils/orderingQuery');
 
 module.exports = {
   async show(request, response) {
     try {
       const count = await Task.count();
 
-      response.header("X-Total-Count", count);
+      response.header('X-Total-Count', count);
 
       const tasks = await Task.findAll({
         where: {
@@ -25,16 +26,24 @@ module.exports = {
             completed_at: Op.between,
           }),
         },
-        include: [
-          { association: "user", attributes: ["name"] },
-          { association: "department", attributes: ["name"] },
-        ],
+        ...ordering(request.query, [
+          'status',
+          'description',
+          'created_at',
+          'updated_at',
+          'started_at',
+          'completed_at',
+        ]),
         ...paginate(request.query),
+        include: [
+          { association: 'user', attributes: ['name'] },
+          { association: 'department', attributes: ['name'] },
+        ],
       });
 
       return response.status(200).json(tasks);
     } catch (error) {
-      return response.status(500).json({ error: "Get task list failed" });
+      return response.status(500).json({ error: 'Get task list failed' });
     }
   },
 
@@ -44,18 +53,18 @@ module.exports = {
     try {
       const task = await Task.findByPk(id, {
         include: [
-          { association: "user", attributes: ["name"] },
-          { association: "department", attributes: ["name"] },
+          { association: 'user', attributes: ['name'] },
+          { association: 'department', attributes: ['name'] },
         ],
       });
 
       if (!task) {
-        return response.status(400).json({ error: "Task not found" });
+        return response.status(400).json({ error: 'Task not found' });
       }
 
       return response.status(200).json(task);
     } catch (error) {
-      return response.status(500).json({ error: "Find task failed" });
+      return response.status(500).json({ error: 'Find task failed' });
     }
   },
 
@@ -65,7 +74,7 @@ module.exports = {
     try {
       if (user_id) {
         if (!(await User.findByPk(user_id))) {
-          return response.status(400).json({ error: "User to bind not found" });
+          return response.status(400).json({ error: 'User to bind not found' });
         }
       }
 
@@ -73,7 +82,7 @@ module.exports = {
         if (!(await Department.findByPk(department_id))) {
           return response
             .status(400)
-            .json({ error: "Department to bind not found" });
+            .json({ error: 'Department to bind not found' });
         }
       }
 
@@ -85,7 +94,7 @@ module.exports = {
 
       return response.status(201).json(task);
     } catch (error) {
-      return response.status(500).json({ error: "Create task failed" });
+      return response.status(500).json({ error: 'Create task failed' });
     }
   },
 
@@ -95,12 +104,12 @@ module.exports = {
 
     try {
       if (!(await Task.findByPk(id))) {
-        return response.status(400).json({ error: "Task not found" });
+        return response.status(400).json({ error: 'Task not found' });
       }
 
       if (user_id) {
         if (!(await User.findByPk(user_id))) {
-          return response.status(400).json({ error: "User to bind not found" });
+          return response.status(400).json({ error: 'User to bind not found' });
         }
       }
 
@@ -108,7 +117,7 @@ module.exports = {
         if (!(await Department.findByPk(department_id))) {
           return response
             .status(400)
-            .json({ error: "Department to bind not found" });
+            .json({ error: 'Department to bind not found' });
         }
       }
 
@@ -118,12 +127,12 @@ module.exports = {
           user_id,
           department_id,
         },
-        { where: { id } }
+        { where: { id } },
       );
 
       return response.status(204).json();
     } catch (error) {
-      return response.state(500).json({ error: "Update task failed" });
+      return response.state(500).json({ error: 'Update task failed' });
     }
   },
 
@@ -132,18 +141,18 @@ module.exports = {
 
     try {
       if (!(await Task.findByPk(id))) {
-        return response.status(400).json({ error: "Task not found" });
+        return response.status(400).json({ error: 'Task not found' });
       }
 
       await Task.destroy({ where: { id } });
 
       return response.status(204).json();
     } catch (error) {
-      return response.status(500).json({ error: "Delete task failed" });
+      return response.status(500).json({ error: 'Delete task failed' });
     }
   },
 
   async changeStatus(request, response) {
-    return response.status(501).json({ route: "Change status task" });
+    return response.status(501).json({ route: 'Change status task' });
   },
 };

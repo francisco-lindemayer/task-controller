@@ -1,55 +1,55 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("tasks", {
+    return queryInterface.createTable('tasks', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: { model: "users", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT"
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
       },
       department_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: { model: "users", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT"
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
       },
       description: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       status: {
-        type: Sequelize.ENUM("Aberto", "Em andamento", "Finalizado"),
+        type: Sequelize.ENUM('Aberto', 'Em andamento', 'Finalizado'),
         allowNull: false,
-        defaultValue: "Aberto"
+        defaultValue: 'Aberto',
       },
       started_at: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       completed_at: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("tasks");
-  }
+    return queryInterface.dropTable('tasks');
+  },
 };

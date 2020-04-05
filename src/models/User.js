@@ -1,5 +1,5 @@
-﻿const { Model, DataTypes } = require("sequelize");
-const bcrypt = require("bcryptjs");
+﻿const { Model, DataTypes } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
 class User extends Model {
   static init(sequelize) {
@@ -8,19 +8,19 @@ class User extends Model {
         name: DataTypes.STRING,
         email: DataTypes.STRING,
         password: DataTypes.STRING,
-        role: DataTypes.STRING
+        role: DataTypes.STRING,
       },
       {
         sequelize,
         hooks: {
-          beforeSave: User.beforeSave
-        }
-      }
+          beforeSave: User.beforeSave,
+        },
+      },
     );
   }
 
   static associate(models) {
-    this.hasMany(models.Task, { foreignKey: "user_id", as: "tasks" });
+    this.hasMany(models.Task, { foreignKey: 'user_id', as: 'tasks' });
   }
 
   static async beforeSave(user, options) {

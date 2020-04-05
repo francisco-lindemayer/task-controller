@@ -1,8 +1,8 @@
-﻿require("dotenv/config");
-const express = require("express");
-const bodyParser = require("body-parser");
-const routes = require("./routes");
-require("./database");
+﻿require('dotenv/config');
+const express = require('express');
+const bodyParser = require('body-parser');
+const routes = require('./routes');
+require('./database');
 
 const app = express();
 

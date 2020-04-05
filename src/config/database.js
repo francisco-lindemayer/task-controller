@@ -1,4 +1,4 @@
-﻿require("dotenv/config");
+﻿require('dotenv/config');
 
 module.exports = {
   dialect: process.env.DB_CONN,
@@ -9,6 +9,6 @@ module.exports = {
   port: process.env.DB_PORT,
   define: {
     timestamp: true,
-    underscored: true
-  }
+    underscored: true,
+  },
 };
