@@ -153,6 +153,28 @@ module.exports = {
   },
 
   async changeStatus(request, response) {
-    return response.status(501).json({ route: 'Change status task' });
+    const { id } = request.params;
+    const { action } = request.body;
+    const status =
+      action == 'tostart'
+        ? 'Em andamento'
+        : action == 'tocomplete'
+        ? 'Finalizado'
+        : undefined;
+    try {
+      if (!status) {
+        return response.status(400).json({ error: 'Invalid action' });
+      }
+
+      if (!(await Task.findByPk(id))) {
+        return response.status(400).json({ error: 'Task not found' });
+      }
+
+      await Task.update({ status }, { where: { id } });
+
+      return response.status(204).json();
+    } catch (error) {
+      return response.status(500).json({ error: 'Change status task failed' });
+    }
   },
 };
