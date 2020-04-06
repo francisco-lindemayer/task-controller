@@ -18,12 +18,7 @@ module.exports = {
             updated_at: Op.between,
           }),
         },
-        ...ordering(request.query, [
-          'role',
-          'email',
-          'created_at',
-          'updated_at',
-        ]),
+        ...ordering(request.query, ['role', 'email', 'created_at', 'updated_at']),
         ...paginate(request.query),
         attributes: { exclude: ['password'] },
       });

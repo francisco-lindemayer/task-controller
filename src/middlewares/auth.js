@@ -1,7 +1,9 @@
 ﻿const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth');
+const User = require('../models/User');
+const Roles = require('./role');
 
-module.exports = (request, response, next) => {
+module.exports = async (request, response, next) => {
   const authHeaders = request.headers.authorization;
 
   if (!authHeaders) {
@@ -24,8 +26,20 @@ module.exports = (request, response, next) => {
     if (error) {
       return response.status(401).send({ error: 'Token invalid' });
     }
-
     request.userId = decoded.id;
-    return next();
   });
+
+  if (
+    ['/user/register', '/user', '/user/:id', '/department', '/department/:id'].includes(
+      request.route.path,
+    )
+  ) {
+    let user = await User.findOne({ where: { id: request.userId, role: Roles.Admin } });
+
+    if (!user) {
+      return response.status(401).json({ error: 'Dont permission to acess this resouce.' });
+    }
+  }
+
+  return next();
 };
