@@ -4,7 +4,7 @@ const userController = require('../controllers/userController');
 
 module.exports = (routes) => {
   routes.post('/user/authenticate', userJoi.auth, userController.auth);
-  routes.post('/user/register', auth, userJoi.store, userController.store);
+  routes.post('/user/register', userJoi.store, userController.store);
 
   routes.get('/user', auth, userController.show);
   routes.get('/user/:id', auth, userJoi.index, userController.index);

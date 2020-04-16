@@ -3,8 +3,6 @@ const User = require('../models/User');
 const Department = require('../models/Department');
 const sequelize = require('sequelize');
 const parseMilliseconds = require('parse-ms');
-const filtering = require('../utils/filteringQuery');
-const ordering = require('../utils/orderingQuery');
 
 module.exports = {
   async reportByUser(request, response) {
@@ -23,8 +21,8 @@ module.exports = {
             sequelize.fn(
               'SUM',
               sequelize.literal(
-                '(SELECT EXTRACT(EPOCH FROM (started_at - created_at)))',
-              ),
+                '(SELECT EXTRACT(EPOCH FROM (started_at - created_at)))'
+              )
             ),
 
             'totaltimetostart',
@@ -33,8 +31,8 @@ module.exports = {
             sequelize.fn(
               'SUM',
               sequelize.literal(
-                '(SELECT EXTRACT(EPOCH FROM (completed_at - started_at)))',
-              ),
+                '(SELECT EXTRACT(EPOCH FROM (completed_at - started_at)))'
+              )
             ),
             'totaltimetocomplete',
           ],
@@ -45,13 +43,13 @@ module.exports = {
       });
 
       const reportData = task.reduce((accumulator, value) => {
-        accumulator['user_id'] = value.user_id;
-        accumulator['totaltasks'] = value.count;
-        accumulator['averagetimetostart'] = parseMilliseconds(
-          (value.totaltimetostart / value.count) * 1000,
+        accumulator.user_id = value.user_id;
+        accumulator.totaltasks = value.count;
+        accumulator.averagetimetostart = parseMilliseconds(
+          (value.totaltimetostart / value.count) * 1000
         );
-        accumulator['averagetimetocomplete'] = parseMilliseconds(
-          (value.totaltimetocomplete / value.count) * 1000,
+        accumulator.averagetimetocomplete = parseMilliseconds(
+          (value.totaltimetocomplete / value.count) * 1000
         );
 
         return accumulator;
@@ -80,8 +78,8 @@ module.exports = {
             sequelize.fn(
               'SUM',
               sequelize.literal(
-                '(SELECT EXTRACT(EPOCH FROM (started_at - created_at)))',
-              ),
+                '(SELECT EXTRACT(EPOCH FROM (started_at - created_at)))'
+              )
             ),
             'totaltimetostart',
           ],
@@ -89,8 +87,8 @@ module.exports = {
             sequelize.fn(
               'SUM',
               sequelize.literal(
-                '(SELECT EXTRACT(EPOCH FROM (completed_at - started_at)))',
-              ),
+                '(SELECT EXTRACT(EPOCH FROM (completed_at - started_at)))'
+              )
             ),
             'totaltimetocomplete',
           ],
@@ -101,13 +99,13 @@ module.exports = {
       });
 
       const reportData = task.reduce((accumulator, value) => {
-        accumulator['department_id'] = value.department_id;
-        accumulator['totaltasks'] = value.count;
-        accumulator['averagetimetostart'] = parseMilliseconds(
-          (value.totaltimetostart / value.count) * 1000,
+        accumulator.department_id = value.department_id;
+        accumulator.totaltasks = value.count;
+        accumulator.averagetimetostart = parseMilliseconds(
+          (value.totaltimetostart / value.count) * 1000
         );
-        accumulator['averagetimetocomplete'] = parseMilliseconds(
-          (value.totaltimetocomplete / value.count) * 1000,
+        accumulator.averagetimetocomplete = parseMilliseconds(
+          (value.totaltimetocomplete / value.count) * 1000
         );
 
         return accumulator;

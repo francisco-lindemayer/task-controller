@@ -1,19 +1,21 @@
 {
   "name": "task-controller-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Task Controller API",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "npx sequelize db:migrate && nodemon src/index.js"
+    "start": "sequelize db:migrate && npx sequelize-cli db:seed:all && nodemon src/index.js",
+    "dev": "node src/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Francisco Lindemayer",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "celebrate": "^12.0.1",
+    "consign": "^0.1.6",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -23,7 +25,15 @@
     "sequelize": "^5.21.5"
   },
   "devDependencies": {
-    "prettier": "^2.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.4",
     "sequelize-cli": "^5.5.1"
   }
 }

@@ -12,7 +12,7 @@ module.exports = async (request, response, next) => {
 
   const parts = authHeaders.split(' ');
 
-  if (!parts.length == 2) {
+  if (!parts.length === 2) {
     return response.status(401).send({ error: 'Token error' });
   }
 
@@ -30,14 +30,22 @@ module.exports = async (request, response, next) => {
   });
 
   if (
-    ['/user/register', '/user', '/user/:id', '/department', '/department/:id'].includes(
-      request.route.path,
-    )
+    [
+      '/user/register',
+      '/user',
+      '/user/:id',
+      '/department',
+      '/department/:id',
+    ].includes(request.route.path)
   ) {
-    let user = await User.findOne({ where: { id: request.userId, role: Roles.Admin } });
+    const user = await User.findOne({
+      where: { id: request.userId, role: Roles.Admin },
+    });
 
     if (!user) {
-      return response.status(401).json({ error: 'Dont permission to acess this resouce.' });
+      return response
+        .status(401)
+        .json({ error: 'Dont permission to acess this resouce.' });
     }
   }
 

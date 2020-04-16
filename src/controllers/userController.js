@@ -18,7 +18,12 @@ module.exports = {
             updated_at: Op.between,
           }),
         },
-        ...ordering(request.query, ['role', 'email', 'created_at', 'updated_at']),
+        ...ordering(request.query, [
+          'role',
+          'email',
+          'created_at',
+          'updated_at',
+        ]),
         ...paginate(request.query),
         attributes: { exclude: ['password'] },
       });
@@ -50,7 +55,7 @@ module.exports = {
   },
 
   async store(request, response) {
-    const { name, email, password } = request.body;
+    const { name, email, password, role } = request.body;
     try {
       if (await User.findOne({ where: { email } })) {
         return response.status(400).json({ error: 'User already exists' });
@@ -60,6 +65,7 @@ module.exports = {
         name,
         email,
         password,
+        role,
       });
 
       user.password = undefined;
@@ -82,7 +88,7 @@ module.exports = {
       }
 
       console.log(id, name);
-      const user = User.update({ name }, { where: { id } });
+      const user = User.update({ name, role }, { where: { id } });
 
       return response.status(204).json(user);
     } catch (error) {

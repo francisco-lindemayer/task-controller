@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  app:
+    container_name: nodejs-task
+    command: npm start
+    build: .
+    volumes:
+      - .:/home/node/api
+    depends_on:
+      - task-db
+    networks:
+      - app-connect
+    ports:
+      - '3333:3333'
+
+  task-db:
+    container_name: postgres-task
+    image: postgres:11
+    restart: unless-stopped
+    volumes:
+      - postgres-task-data:/data
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    networks:
+      - app-connect
+
+volumes:
+  postgres-task-data:
+
+networks:
+  app-connect:
+    driver: bridge
