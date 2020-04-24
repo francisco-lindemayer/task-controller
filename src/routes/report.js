@@ -1,7 +1,7 @@
-﻿const auth = require('../middlewares/auth');
-const reportController = require('../controllers/reportController');
+﻿const { guard, Admin } = require('../middlewares/guard');
+const controller = require('../controllers/reportController');
 
-module.exports = (routes) => {
-  routes.get('/report/user/:id', auth, reportController.reportByUser);
-  routes.get('/report/department/:id', auth, reportController.reportByDepartment);
+module.exports = (app) => {
+  app.get('/report/user/:id', guard([Admin]), controller.reportByUser);
+  app.get('/report/department/:id', guard([Admin]), controller.reportByDepartment);
 };

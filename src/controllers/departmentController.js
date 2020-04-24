@@ -44,9 +44,7 @@ module.exports = {
 
     try {
       if (await Department.findOne({ where: { name } })) {
-        return response
-          .status(400)
-          .json({ error: 'Department already exists' });
+        return response.status(400).json({ error: 'Department already exists' });
       }
 
       const department = await Department.create({ name });
@@ -67,9 +65,7 @@ module.exports = {
       }
 
       if (await Department.findOne({ where: { name, id: { [Op.ne]: id } } })) {
-        return response
-          .status(400)
-          .json({ error: 'Department already exists' });
+        return response.status(400).json({ error: 'Department already exists' });
       }
 
       await Department.update({ name }, { where: { id } });

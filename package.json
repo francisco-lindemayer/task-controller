@@ -4,7 +4,7 @@
   "description": "Task Controller API",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "npx sequelize db:migrate && npx sequelize-cli db:seed:all && nodemon src/index.js",
     "dev": "npx sequelize db:migrate && npx sequelize-cli db:seed:all && nodemon src/index.js"
   },
   "keywords": [],

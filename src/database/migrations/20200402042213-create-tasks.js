@@ -19,7 +19,7 @@ module.exports = {
       department_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: { model: 'users', key: 'id' },
+        references: { model: 'departments', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
       },

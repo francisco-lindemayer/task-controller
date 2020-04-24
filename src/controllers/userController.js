@@ -9,6 +9,7 @@ const ordering = require('../utils/orderingQuery');
 module.exports = {
   async show(request, response) {
     try {
+      console.log('opa');
       const users = await User.findAll({
         where: {
           ...filtering(request.query, {
@@ -18,12 +19,7 @@ module.exports = {
             updated_at: Op.between,
           }),
         },
-        ...ordering(request.query, [
-          'role',
-          'email',
-          'created_at',
-          'updated_at',
-        ]),
+        ...ordering(request.query, ['role', 'email', 'created_at', 'updated_at']),
         ...paginate(request.query),
         attributes: { exclude: ['password'] },
       });

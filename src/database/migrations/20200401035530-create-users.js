@@ -1,5 +1,7 @@
 'use strict';
 
+const slug = require('../../utils/slugRole');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable('users', {
@@ -23,9 +25,9 @@ module.exports = {
         select: false,
       },
       role: {
-        type: Sequelize.ENUM('Administrador', 'Agente'),
+        type: Sequelize.ENUM(slug.Admin, slug.Analyzer, slug.User),
         allowNull: false,
-        defaultValue: 'Agente',
+        defaultValue: slug.User,
       },
       created_at: {
         type: Sequelize.DATE,

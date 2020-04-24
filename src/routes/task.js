@@ -1,12 +1,12 @@
-﻿const auth = require('../middlewares/auth');
-const taskJoi = require('../validators/task');
-const taskController = require('../controllers/taskController');
+﻿const { guard, Admin, Analyzer, User } = require('../middlewares/guard');
+const joi = require('../validators/task');
+const controller = require('../controllers/taskController');
 
-module.exports = (routes) => {
-  routes.get('/task', auth, taskController.show);
-  routes.get('/task/:id', auth, taskJoi.index, taskController.index);
-  routes.post('/task', auth, taskJoi.store, taskController.store);
-  routes.put('/task/:id', auth, taskJoi.update, taskController.update);
-  routes.delete('/task/:id', auth, taskJoi.remove, taskController.remove);
-  routes.patch('/task/:id', auth, taskJoi.changeStatus, taskController.changeStatus);
+module.exports = (app) => {
+  app.get('/task', guard([Admin, Analyzer, User]), controller.show);
+  app.get('/task/:id', guard([Admin, Analyzer, User]), joi.index, controller.index);
+  app.post('/task', guard([Admin, Analyzer, User]), joi.store, controller.store);
+  app.put('/task/:id', guard([Admin, Analyzer, User]), joi.update, controller.update);
+  app.delete('/task/:id', guard([Admin, Analyzer, User]), joi.remove, controller.remove);
+  app.patch('/task/:id', guard([Admin, Analyzer, User]), joi.changeStatus, controller.changeStatus);
 };

@@ -7,6 +7,7 @@ module.exports = {
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
+  seederStorage: 'sequelize',
   define: {
     timestamp: true,
     underscored: true,

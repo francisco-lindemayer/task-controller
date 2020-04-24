@@ -80,9 +80,7 @@ module.exports = {
 
       if (department_id) {
         if (!(await Department.findByPk(department_id))) {
-          return response
-            .status(400)
-            .json({ error: 'Department to bind not found' });
+          return response.status(400).json({ error: 'Department to bind not found' });
         }
       }
 
@@ -94,7 +92,7 @@ module.exports = {
 
       return response.status(201).json(task);
     } catch (error) {
-      return response.status(500).json({ error: 'Create task failed' });
+      return response.status(500).json({ error: 'Create task failed', details: error });
     }
   },
 
@@ -115,9 +113,7 @@ module.exports = {
 
       if (department_id) {
         if (!(await Department.findByPk(department_id))) {
-          return response
-            .status(400)
-            .json({ error: 'Department to bind not found' });
+          return response.status(400).json({ error: 'Department to bind not found' });
         }
       }
 
@@ -178,29 +174,21 @@ module.exports = {
         return response.status(400).json({ error: 'Task not found' });
       }
 
-      if (
-        status === 'Finalizado' &&
-        task.dataValues.status !== 'Em andamento'
-      ) {
+      if (status === 'Finalizado' && task.dataValues.status !== 'Em andamento') {
         return response.status(400).json({
-          error:
-            'Invalid action to currently context. Check currently task status',
+          error: 'Invalid action to currently context. Check currently task status',
           status: task.dataValues.status,
         });
       }
 
       if (status === 'Em andamento' && task.dataValues.status !== 'Aberto') {
         return response.status(400).json({
-          error:
-            'Invalid action to currently context. Check currently task status',
+          error: 'Invalid action to currently context. Check currently task status',
           status: task.dataValues.status,
         });
       }
 
-      await Task.update(
-        { status, started_at, completed_at },
-        { where: { id } }
-      );
+      await Task.update({ status, started_at, completed_at }, { where: { id } });
 
       return response.status(204).json();
     } catch (error) {
